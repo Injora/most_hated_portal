@@ -21,13 +21,20 @@ app.post("/assignments", async (req, res) => {
     }
 });
 
-// two
+// two + five
 app.get("/assignments", async (req, res) => {
     try {
+        const { submitted } = req.query;
+        if (submitted !== undefined) {
+            const filtered = await pool.query(
+                "SELECT * FROM assignments WHERE submitted = $1 ORDER BY id DESC",
+                [submitted]
+            );
+            return res.json(filtered.rows);
+        }
         const result = await pool.query(
             "SELECT * FROM assignments ORDER BY id DESC"
         );
-
         res.json(result.rows);
     } catch (err) {
         console.error(err);
@@ -73,7 +80,6 @@ app.delete("/assignments/:id", async (req, res) => {
         res.status(500).json({ message: "errooor", error: err.message });
     }
 });
-
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, (err) => {
