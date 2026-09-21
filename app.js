@@ -4,6 +4,7 @@ const pool = require("./db");
 const app = express();
 
 app.use(express.json());
+// one
 app.post("/assignments", async (req, res) => {
     try {
         const { title, deadline } = req.body;
@@ -16,7 +17,21 @@ app.post("/assignments", async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server error", error: err.message });
+        res.status(500).json({ message: "errooor", error: err.message });
+    }
+});
+
+// two
+app.get("/assignments", async (req, res) => {
+    try {
+        const result = await pool.query(
+            "SELECT * FROM assignments ORDER BY id DESC"
+        );
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "errooor", error: err.message });
     }
 });
 
